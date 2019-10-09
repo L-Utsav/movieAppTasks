@@ -1,6 +1,7 @@
 package com.stackroute.movieAppTasks.service;
 
 import com.stackroute.movieAppTasks.domain.Movie;
+import com.stackroute.movieAppTasks.exception.MovieNotFoundException;
 import com.stackroute.movieAppTasks.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,19 +16,21 @@ public class MovieServiceImpl implements MovieService {
 
     @Autowired
     public MovieServiceImpl(MovieRepository movieRepository){
+        super();
         this.movieRepository = movieRepository;
     }
 
     @Override
-    public Movie saveNewMovie(Movie movie)  {
-//    if(movieRepository.existsById(movie.getId())){
-//      throw new Exception("Movie already exits");
-//    }
+    public Movie saveNewMovie(Movie movie) throws MovieNotFoundException {
+
+        if(movieRepository.existsById(movie.getId())){
+            throw new MovieNotFoundException("Movie Already Exists");
+        }
         Movie savedMovie = movieRepository.save(movie);
-//    if(savedMovie == null)
-//    {
-//      throw new Exception("Movie already exists.");
-//    }
+        if (savedMovie == null){
+            throw new MovieNotFoundException("Movie already exists");
+        }
+
         return savedMovie;
     }
 
@@ -37,31 +40,32 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Optional<Movie> getById(int id) {
+    public Optional<Movie> getById(int id) throws MovieNotFoundException {
         Optional<Movie> movieId = movieRepository.findById(id);
-//    if (movieId.isEmpty()){
-//      throw new Exception("Movie not found");
-//    }
-        return movieId;
+        if (movieId.isPresent()){
+            return movieId;
+        }else {
+            throw new MovieNotFoundException("Movie Not Found");
+        }
     }
 
     @Override
-    public boolean deleteById(int id){
+    public boolean deleteById(int id) throws MovieNotFoundException {
         Optional<Movie> movieId = movieRepository.findById(id);
-//    if (movieId.isEmpty()){
-//      throw new Exception("Movie not found");
-//    }
+        if (movieId.isEmpty()){
+            throw new MovieNotFoundException("Movie not found");
+        }
         movieRepository.deleteById(id);
         return true;
 
     }
 
     @Override
-    public Movie updateById(Movie movie, int id) {
+    public Movie updateById(Movie movie, int id) throws MovieNotFoundException {
         Optional<Movie> userOptional = movieRepository.findById(id);
-//    if(userOptional.isEmpty()){
-//      throw new Exception("Track not found!");
-//    }
+        if(userOptional.isEmpty()){
+            throw new MovieNotFoundException("Track not found!");
+        }
         movie.setId(id);
         movieRepository.save(movie);
         return movie;
