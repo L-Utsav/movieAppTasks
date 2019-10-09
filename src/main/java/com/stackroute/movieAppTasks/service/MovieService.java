@@ -1,6 +1,7 @@
 package com.stackroute.movieAppTasks.service;
 
 import com.stackroute.movieAppTasks.domain.Movie;
+import com.stackroute.movieAppTasks.exception.MovieAlreadyExistsException;
 import com.stackroute.movieAppTasks.exception.MovieNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 @Service
 public interface MovieService {
 
-    public Movie saveNewMovie(Movie movie) throws MovieNotFoundException;
+    public Movie saveNewMovie(Movie movie) throws MovieAlreadyExistsException;
 
     public List<Movie> getAllMovie();
 
