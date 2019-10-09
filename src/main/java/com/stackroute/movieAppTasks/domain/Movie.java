@@ -23,6 +23,4 @@ public class Movie {
     private int revenue;
 
 
-    public Movie(int i, String title2, int id2, String date2) {
-    }
 }
